@@ -1,1 +1,68 @@
 
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  role      String   @default("USER")
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Risco {
+  id          Int      @id @default(autoincrement())
+  descricao   String
+  nivel       String   @default("MODERADO")
+  status      String   @default("IDENTIFICADO")
+  setor       String
+  responsavel String
+  prazo       DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Pgr {
+  id              Int      @id @default(autoincrement())
+  versao          String
+  dataElaboracao  DateTime
+  dataRevisao     DateTime?
+  elaborador      String
+  status          String   @default("RASCUNHO")
+  descricao       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Colaborador {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  cargo        String
+  setor        String
+  email        String?
+  dataAdmissao DateTime
+  ativo        Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Compliance {
+  id               Int      @id @default(autoincrement())
+  requisito        String
+  descricao        String
+  status           String   @default("PENDENTE")
+  evidencia        String?
+  responsavel      String?
+  dataVerificacao  DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
