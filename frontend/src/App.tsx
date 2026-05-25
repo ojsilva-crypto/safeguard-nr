@@ -1,20 +1,23 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { PrivateRoute } from './components/PrivateRoute'
+import { Layout } from './components/Layout'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
-import { Clientes } from './pages/Clientes'
-import { Produtos } from './pages/Produtos'
-import { Pedidos } from './pages/Pedidos'
-import { Layout } from './components/Layout'
+import { Riscos } from './pages/Riscos'
+import { Pgr } from './pages/Pgr'
+import { Colaboradores } from './pages/Colaboradores'
+import { Compliance } from './pages/Compliance'
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* Rota pública */}
           <Route path="/login" element={<Login />} />
+
+          {/* Rotas privadas */}
           <Route
             path="/"
             element={
@@ -24,11 +27,15 @@ export default function App() {
             }
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="clientes" element={<Clientes />} />
-            <Route path="produtos" element={<Produtos />} />
-            <Route path="pedidos" element={<Pedidos />} />
+            <Route path="dashboard"      element={<Dashboard />} />
+            <Route path="riscos"         element={<Riscos />} />
+            <Route path="pgr"            element={<Pgr />} />
+            <Route path="colaboradores"  element={<Colaboradores />} />
+            <Route path="compliance"     element={<Compliance />} />
           </Route>
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
