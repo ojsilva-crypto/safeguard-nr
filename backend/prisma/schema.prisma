@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,61 +7,61 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id        Int      @id @default(autoincrement())
+model User {
+  id        String   @id @default(uuid())
   nome      String
   email     String   @unique
   senha     String
-  role      String   @default("USER")
-  ativo     Boolean  @default(true)
+  role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Risco {
-  id          Int      @id @default(autoincrement())
-  descricao   String
-  nivel       String   @default("MODERADO")
-  status      String   @default("IDENTIFICADO")
+model Colaborador {
+  id          String   @id @default(uuid())
+  nome        String
+  cpf         String   @unique
+  cargo       String
   setor       String
-  responsavel String
-  prazo       DateTime?
+  dataAdmissao DateTime
+  status      String   @default("ativo")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
-model Pgr {
-  id              Int      @id @default(autoincrement())
-  versao          String
-  dataElaboracao  DateTime
-  dataRevisao     DateTime?
-  elaborador      String
-  status          String   @default("RASCUNHO")
-  descricao       String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model Risco {
+  id          String   @id @default(uuid())
+  descricao   String
+  categoria   String
+  severidade  String
+  probabilidade String
+  setor       String
+  status      String   @default("identificado")
+  medidas     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model Colaborador {
-  id           Int      @id @default(autoincrement())
-  nome         String
-  cargo        String
-  setor        String
-  email        String?
-  dataAdmissao DateTime
-  ativo        Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model PGR {
+  id          String   @id @default(uuid())
+  titulo      String
+  setor       String
+  responsavel String
+  dataInicio  DateTime
+  dataRevisao DateTime
+  status      String   @default("em_elaboracao")
+  versao      String   @default("1.0")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model Compliance {
-  id               Int      @id @default(autoincrement())
-  requisito        String
-  descricao        String
-  status           String   @default("PENDENTE")
-  evidencia        String?
-  responsavel      String?
-  dataVerificacao  DateTime?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model AcaoCorretiva {
+  id          String   @id @default(uuid())
+  descricao   String
+  responsavel String
+  prazo       DateTime
+  status      String   @default("pendente")
+  prioridade  String   @default("media")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
