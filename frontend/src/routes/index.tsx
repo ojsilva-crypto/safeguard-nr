@@ -1,49 +1,38 @@
-
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Login } from '../pages/Login'
-import { Layout } from '../components/Layout'
-import { Dashboard } from '../pages/Dashboard'
-import { Clientes } from '../pages/Clientes'
-import { Produtos } from '../pages/Produtos'
-import { Pedidos } from '../pages/Pedidos'
+import Layout from '../components/Layout'
+import Login from '../pages/Login'
+import Dashboard from '../pages/Dashboard'
+import Riscos from '../pages/Riscos'
+import Pgr from '../pages/Pgr'
+import Colaboradores from '../pages/Colaboradores'
+import Compliance from '../pages/Compliance'
 
-function PrivateRoute({ children }: { children: React.ReactNode }) {
+function PrivateRoute({ children }: { children: JSX.Element }) {
   const { signed, loading } = useAuth()
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
-      </div>
-    )
-  }
-
-  return signed ? <>{children}</> : <Navigate to="/login" />
+  if (loading) return <div className="flex items-center justify-center h-screen text-gray-400">Carregando...</div>
+  return signed ? children : <Navigate to="/login" replace />
 }
 
-export function AppRoutes() {
+export default function AppRoutes() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Layout />
-            </PrivateRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="clientes" element={<Clientes />} />
-          <Route path="produtos" element={<Produtos />} />
-          <Route path="pedidos" element={<Pedidos />} />
-        </Route>
-
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <Layout />
+          </PrivateRoute>
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="riscos" element={<Riscos />} />
+        <Route path="pgr" element={<Pgr />} />
+        <Route path="colaboradores" element={<Colaboradores />} />
+        <Route path="compliance" element={<Compliance />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
