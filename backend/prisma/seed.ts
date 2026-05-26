@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
@@ -8,71 +7,63 @@ async function main() {
   console.log('🌱 Iniciando seed...')
 
   // Usuário admin
-  const senhaHash = await bcrypt.hash('admin123', 10)
-  await prisma.usuario.upsert({
-    where:  { email: 'admin@safeguard.com' },
+  const hashedPassword = await bcrypt.hash('admin123', 10)
+  await prisma.user.upsert({
+    where: { email: 'admin@safeguard.com' },
     update: {},
     create: {
-      nome:  'Administrador',
+      name: 'Administrador',
       email: 'admin@safeguard.com',
-      senha: senhaHash,
-      role:  'ADMIN',
+      password: hashedPassword,
+      role: 'admin',
     },
   })
 
-  // Riscos exemplo
+  // Riscos
   await prisma.risco.createMany({
     skipDuplicates: true,
     data: [
-      { descricao: 'Exposição a ruído acima de 85 dB(A)',        nivel: 'CRITICO',  status: 'EM_TRATAMENTO', setor: 'Produção',     responsavel: 'Carlos Silva',   prazo: new Date('2024-12-31') },
-      { descricao: 'Ergonomia inadequada em postos de trabalho', nivel: 'MODERADO', status: 'IDENTIFICADO',  setor: 'Administrativo', responsavel: 'Ana Souza',    prazo: new Date('2024-11-30') },
-      { descricao: 'Risco químico — manuseio de solventes',      nivel: 'CRITICO',  status: 'IDENTIFICADO',  setor: 'Manutenção',   responsavel: 'Pedro Lima',     prazo: new Date('2024-10-15') },
-      { descricao: 'Iluminação insuficiente no almoxarifado',    nivel: 'BAIXO',    status: 'CONTROLADO',    setor: 'Almoxarifado', responsavel: 'Marcia Rocha',   prazo: new Date('2024-09-30') },
-      { descricao: 'Risco de queda em área elevada',             nivel: 'CRITICO',  status: 'EM_TRATAMENTO', setor: 'Manutenção',   responsavel: 'João Ferreira',  prazo: new Date('2024-10-31') },
+      { titulo: 'Exposição a agentes químicos', descricao: 'Contato com solventes na linha de produção', nivel: 'alto', categoria: 'Químico', status: 'em_tratamento', responsavel: 'João Silva', prazo: new Date('2026-06-30') },
+      { titulo: 'Ruído excessivo', descricao: 'Níveis acima de 85dB na área de usinagem', nivel: 'medio', categoria: 'Físico', status: 'aberto', responsavel: 'Maria Santos', prazo: new Date('2026-07-15') },
+      { titulo: 'Ergonomia inadequada', descricao: 'Postura incorreta em postos de trabalho', nivel: 'baixo', categoria: 'Ergonômico', status: 'aberto', responsavel: 'Carlos Lima', prazo: new Date('2026-08-01') },
+      { titulo: 'Risco de incêndio', descricao: 'Armazenamento inadequado de materiais inflamáveis', nivel: 'critico', categoria: 'Segurança', status: 'em_tratamento', responsavel: 'Ana Costa', prazo: new Date('2026-06-15') },
     ],
   })
 
-  // PGR exemplo
-  await prisma.pgr.create({
-    data: {
-      versao:         '1.0.0',
-      dataElaboracao: new Date('2024-01-10'),
-      dataRevisao:    new Date('2025-01-10'),
-      elaborador:     'Eng. Carlos Mendes',
-      status:         'ATIVO',
-      descricao:      'PGR elaborado conforme NR-1 — abrange todos os setores da empresa',
-    },
+  // PGR
+  await prisma.pgr.createMany({
+    skipDuplicates: true,
+    data: [
+      { titulo: 'Revisão do inventário de riscos', descricao: 'Atualização completa do inventário de riscos ocupacionais', status: 'em_andamento', responsavel: 'João Silva', dataInicio: new Date('2026-05-01'), dataPrevista: new Date('2026-07-01') },
+      { titulo: 'Implantação de EPC na usinagem', descricao: 'Instalação de equipamentos de proteção coletiva', status: 'pendente', responsavel: 'Maria Santos', dataInicio: new Date('2026-06-01'), dataPrevista: new Date('2026-08-01') },
+      { titulo: 'Treinamento NR-35', descricao: 'Capacitação para trabalho em altura', status: 'concluido', responsavel: 'Carlos Lima', dataInicio: new Date('2026-04-01'), dataPrevista: new Date('2026-04-30'), dataConclusao: new Date('2026-04-28') },
+    ],
   })
 
-  // Colaboradores exemplo
+  // Colaboradores
   await prisma.colaborador.createMany({
     skipDuplicates: true,
     data: [
-      { nome: 'Carlos Silva',   cargo: 'Operador de Máquinas',   setor: 'Produção',       email: 'carlos@empresa.com',  dataAdmissao: new Date('2019-03-15'), ativo: true  },
-      { nome: 'Ana Souza',      cargo: 'Analista Administrativo', setor: 'Administrativo', email: 'ana@empresa.com',     dataAdmissao: new Date('2021-06-01'), ativo: true  },
-      { nome: 'Pedro Lima',     cargo: 'Técnico de Manutenção',  setor: 'Manutenção',     email: 'pedro@empresa.com',   dataAdmissao: new Date('2020-09-20'), ativo: true  },
-      { nome: 'Marcia Rocha',   cargo: 'Almoxarife',             setor: 'Almoxarifado',   email: 'marcia@empresa.com',  dataAdmissao: new Date('2018-11-05'), ativo: true  },
-      { nome: 'João Ferreira',  cargo: 'Eletricista Industrial', setor: 'Manutenção',     email: 'joao@empresa.com',    dataAdmissao: new Date('2022-02-14'), ativo: false },
+      { nome: 'João Silva', cargo: 'Técnico de Segurança', setor: 'SESMT', email: 'joao.silva@empresa.com', telefone: '(47) 99999-0001', status: 'ativo', admissao: new Date('2020-03-15') },
+      { nome: 'Maria Santos', cargo: 'Engenheira de Segurança', setor: 'SESMT', email: 'maria.santos@empresa.com', telefone: '(47) 99999-0002', status: 'ativo', admissao: new Date('2019-07-01') },
+      { nome: 'Carlos Lima', cargo: 'Operador de Produção', setor: 'Produção', email: 'carlos.lima@empresa.com', telefone: '(47) 99999-0003', status: 'ferias', admissao: new Date('2021-01-10') },
+      { nome: 'Ana Costa', cargo: 'Supervisora de Qualidade', setor: 'Qualidade', email: 'ana.costa@empresa.com', telefone: '(47) 99999-0004', status: 'ativo', admissao: new Date('2018-11-20') },
+      { nome: 'Pedro Oliveira', cargo: 'Auxiliar de Produção', setor: 'Produção', email: 'pedro.oliveira@empresa.com', telefone: '(47) 99999-0005', status: 'afastado', admissao: new Date('2022-05-05') },
     ],
   })
 
-  // Compliance NR-1 exemplo
+  // Compliance
   await prisma.compliance.createMany({
     skipDuplicates: true,
     data: [
-      { requisito: 'NR-1 §1.1',  descricao: 'Política de SST estabelecida e comunicada',               status: 'CONFORME',      responsavel: 'SESMT' },
-      { requisito: 'NR-1 §1.2',  descricao: 'PGR elaborado e vigente',                                 status: 'CONFORME',      responsavel: 'SESMT' },
-      { requisito: 'NR-1 §1.3',  descricao: 'Inventário de riscos atualizado',                         status: 'EM_TRATAMENTO' as any, responsavel: 'Eng. Segurança' },
-      { requisito: 'NR-1 §1.4',  descricao: 'Plano de ação documentado para riscos críticos',          status: 'PENDENTE',      responsavel: 'Gestão' },
-      { requisito: 'NR-1 §1.5',  descricao: 'Treinamentos de SST realizados',                          status: 'CONFORME',      responsavel: 'RH' },
-      { requisito: 'NR-1 §1.6',  descricao: 'Registro de acidentes e incidentes mantido',              status: 'CONFORME',      responsavel: 'SESMT' },
-      { requisito: 'NR-1 §1.7',  descricao: 'Participação dos trabalhadores garantida',                status: 'PENDENTE',      responsavel: 'RH' },
-      { requisito: 'NR-1 §1.8',  descricao: 'Monitoramento e revisão do PGR realizado',                status: 'NAO_CONFORME',  responsavel: 'SESMT' },
+      { titulo: 'Auditoria NR-12', descricao: 'Auditoria de conformidade de máquinas e equipamentos', tipo: 'auditoria', status: 'pendente', responsavel: 'Maria Santos', prazo: new Date('2026-07-30') },
+      { titulo: 'Treinamento CIPA', descricao: 'Capacitação dos membros da CIPA', tipo: 'treinamento', status: 'em_andamento', responsavel: 'João Silva', prazo: new Date('2026-06-20') },
+      { titulo: 'Renovação PCMSO', descricao: 'Atualização do Programa de Controle Médico de Saúde Ocupacional', tipo: 'norma', status: 'pendente', responsavel: 'Ana Costa', prazo: new Date('2026-08-15') },
+      { titulo: 'Investigação de incidente', descricao: 'Análise de acidente com afastamento ocorrido em 05/05', tipo: 'incidente', status: 'em_andamento', responsavel: 'Maria Santos', prazo: new Date('2026-06-05') },
     ],
   })
 
   console.log('✅ Seed concluído com sucesso!')
-  console.log('📧 Login: admin@safeguard.com | 🔑 Senha: admin123')
 }
 
 main()
@@ -83,4 +74,3 @@ main()
   .finally(async () => {
     await prisma.$disconnect()
   })
-
