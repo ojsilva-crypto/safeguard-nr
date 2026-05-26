@@ -1,49 +1,33 @@
 import { Router } from 'express'
-import { authController }           from '../controllers/authController'
-import { dashboardController }      from '../controllers/dashboardController'
-import { riscosController }         from '../controllers/riscosController'
-import { pgrController }            from '../controllers/pgrController'
-import { colaboradoresController }  from '../controllers/colaboradoresController'
-import { complianceController }     from '../controllers/complianceController'
-import { authMiddleware }           from '../middlewares/auth'
+import { login } from '../controllers/authController'
+import { getDashboard } from '../controllers/dashboardController'
+import { list as listRiscos, create as createRisco, remove as removeRisco } from '../controllers/riscosController'
+import { list as listPgr, create as createPgr } from '../controllers/pgrController'
+import { list as listColaboradores, create as createColaborador } from '../controllers/colaboradoresController'
+import { list as listCompliance, create as createCompliance } from '../controllers/complianceController'
+import { authMiddleware } from '../middlewares/auth'
 
 const router = Router()
 
 // Auth (público)
-router.post('/auth/login', authController.login)
+router.post('/auth/login', login)
 
-// Protegido
+// Protegidos
 router.use(authMiddleware)
 
-router.get('/auth/me', authController.me)
+router.get('/dashboard', getDashboard)
 
-// Dashboard
-router.get('/dashboard', dashboardController.index)
+router.get('/riscos', listRiscos)
+router.post('/riscos', createRisco)
+router.delete('/riscos/:id', removeRisco)
 
-// Riscos
-router.get('/riscos',         riscosController.index)
-router.get('/riscos/:id',     riscosController.show)
-router.post('/riscos',        riscosController.create)
-router.put('/riscos/:id',     riscosController.update)
-router.delete('/riscos/:id',  riscosController.destroy)
+router.get('/pgr', listPgr)
+router.post('/pgr', createPgr)
 
-// PGR
-router.get('/pgr',        pgrController.index)
-router.get('/pgr/:id',    pgrController.show)
-router.post('/pgr',       pgrController.create)
-router.put('/pgr/:id',    pgrController.update)
-router.delete('/pgr/:id', pgrController.destroy)
+router.get('/colaboradores', listColaboradores)
+router.post('/colaboradores', createColaborador)
 
-// Colaboradores
-router.get('/colaboradores',        colaboradoresController.index)
-router.get('/colaboradores/:id',    colaboradoresController.show)
-router.post('/colaboradores',       colaboradoresController.create)
-router.put('/colaboradores/:id',    colaboradoresController.update)
-router.delete('/colaboradores/:id', colaboradoresController.destroy)
+router.get('/compliance', listCompliance)
+router.post('/compliance', createCompliance)
 
-// Compliance
-router.get('/compliance',         complianceController.index)
-router.patch('/compliance/:id',   complianceController.updateStatus)
-
-export { router }
-
+export default router
