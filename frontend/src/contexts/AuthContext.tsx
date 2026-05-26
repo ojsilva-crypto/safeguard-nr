@@ -1,19 +1,18 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { api } from '../services/api'
+import api from '../services/api'
 
 interface User {
-  id: number
-  nome: string
+  id: string
+  name: string
   email: string
-  perfil: string
+  role: string
 }
 
 interface AuthContextData {
   user: User | null
   signed: boolean
   loading: boolean
-  signIn: (email: string, senha: string) => Promise<void>
+  signIn: (email: string, password: string) => Promise<void>
   signOut: () => void
 }
 
@@ -24,32 +23,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('@App:token')
-    const storedUser = localStorage.getItem('@App:user')
+    const storedToken = localStorage.getItem('token')
+    const storedUser = localStorage.getItem('user')
 
-    if (token && storedUser) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    if (storedToken && storedUser) {
       setUser(JSON.parse(storedUser))
     }
-
     setLoading(false)
   }, [])
 
-  async function signIn(email: string, senha: string) {
-    const response = await api.post('/auth/login', { email, senha })
-    const { token, usuario } = response.data
+  async function signIn(email: string, password: string) {
+    const response = await api.post('/auth/login', { email, password })
+    const { token, user } = response.data
 
-    localStorage.setItem('@App:token', token)
-    localStorage.setItem('@App:user', JSON.stringify(usuario))
-
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    setUser(usuario)
+    localStorage.setItem('token', token)
+    localStorage.setItem('user', JSON.stringify(user))
+    setUser(user)
   }
 
   function signOut() {
-    localStorage.removeItem('@App:token')
-    localStorage.removeItem('@App:user')
-    delete api.defaults.headers.common['Authorization']
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
     setUser(null)
   }
 
