@@ -2,14 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-gray-950 text-gray-100 font-sans antialiased;
+  }
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f8fafc;
-  color: #1e293b;
+@layer components {
+  .card {
+    @apply bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-md;
+  }
+
+  .btn-primary {
+    @apply bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-800 hover:bg-gray-700 text-gray-100 font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+
+  .input {
+    @apply bg-gray-800 border border-gray-700 text-gray-100 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-brand-500 placeholder-gray-500;
+  }
+
+  .badge-red {
+    @apply bg-red-500/20 text-red-400 text-xs font-medium px-2 py-1 rounded-full;
+  }
+
+  .badge-yellow {
+    @apply bg-yellow-500/20 text-yellow-400 text-xs font-medium px-2 py-1 rounded-full;
+  }
+
+  .badge-green {
+    @apply bg-green-500/20 text-green-400 text-xs font-medium px-2 py-1 rounded-full;
+  }
+
+  .badge-blue {
+    @apply bg-blue-500/20 text-blue-400 text-xs font-medium px-2 py-1 rounded-full;
+  }
 }
