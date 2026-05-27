@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  nome      String
+  email     String   @unique
+  senha     String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Colaborador {
+  id           String   @id @default(uuid())
+  nome         String
+  cpf          String   @unique
+  cargo        String
+  setor        String
+  dataAdmissao DateTime
+  status       String   @default("ativo")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Risco {
+  id            String   @id @default(uuid())
+  descricao     String
+  categoria     String
+  severidade    String
+  probabilidade String
+  setor         String
+  status        String   @default("identificado")
+  medidas       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model PGR {
+  id          String   @id @default(uuid())
+  titulo      String
+  setor       String
+  responsavel String
+  dataInicio  DateTime
+  dataRevisao DateTime
+  status      String   @default("em_elaboracao")
+  versao      String   @default("1.0")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AcaoCorretiva {
+  id          String   @id @default(uuid())
+  descricao   String
+  responsavel String
+  prazo       DateTime
+  status      String   @default("pendente")
+  prioridade  String   @default("media")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
